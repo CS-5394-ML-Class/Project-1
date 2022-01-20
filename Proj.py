@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from torch import nn
+import pandas
 
 
 
@@ -22,10 +23,6 @@ class model(nn.Module):
     def forward(self, x):
         return (self.c1)/torch.pow((self.c2+self.c3*torch.exp(-x)), self.c4)
 
-    # Get a prediction from the model
-    def predict(self, x):
-        return (self.c1)/torch.pow((self.c2+self.c3*torch.exp(-x)), self.c4)
-
     # Update the parameters given the derivatives of those values
     def update(self, loss):
         loss.backward()
@@ -33,11 +30,6 @@ class model(nn.Module):
         self.c2 = torch.tensor(self.c2 - self.alpha*self.c2.grad, requires_grad=True)
         self.c3 = torch.tensor(self.c3 - self.alpha*self.c3.grad, requires_grad=True)
         self.c4 = torch.tensor(self.c4 - self.alpha*self.c4.grad, requires_grad=True)
-        #print(self.c1.grad)
-        #self.c1 = self.c1 - self.alpha*self.dc1
-        #self.c2 = self.c2 - self.alpha*self.dc2
-        #self.c3 = self.c3 - self.alpha*self.dc3
-        #self.c4 = self.c4 - self.alpha*self.dc4
 
     # The loss function used to evaluate the model
     def getLoss(self, preds, labels):
@@ -69,9 +61,6 @@ def train():
 
         # Calculate the loss
         loss = m.getLoss(preds, y)
-
-        # Calculate the derivatives of the loss
-        #m.calculateDerivatives(x, preds, y)
 
         # Update the model
         m.update(loss)
