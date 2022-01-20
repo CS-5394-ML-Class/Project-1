@@ -3,6 +3,7 @@ import torch
 from torch import nn
 import pandas
 import os
+import matplotlib.pyplot as plt
 
 
 
@@ -19,7 +20,7 @@ class model(nn.Module):
         self.c2 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c3 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c4 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c5 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
+        self.c5 = torch.tensor(0, dtype=torch.float64, requires_grad=True)
     
     # Get a prediction from the model
     # Inputs:
@@ -100,6 +101,23 @@ def train():
     
     # Make the prediction
     print(f"Model prediction for 2122: {m(torch.tensor(2122))} billion people")
+    
+    
+    
+    
+    
+    
+    ### Graph creation ###
+    # Create some data to test in the function
+    testX = torch.from_numpy(np.linspace(1960,2020,100))
+    
+    # Input the values into the function
+    testY = m(testX).detach()
+    
+    # Create the graph
+    plt.plot(years, values, c="blue")
+    plt.plot(testX, testY, c="red")
+    plt.show()
 
 
 train()
