@@ -20,18 +20,28 @@ class model(nn.Module):
         self.c4 = torch.tensor(1.0, requires_grad=True)
     
     # Get a prediction from the model
+    # Inputs:
+    #   x - The inputs into the model
     def forward(self, x):
         return (self.c1)/torch.pow((self.c2+self.c3*torch.exp(-x)), self.c4)
 
     # Update the parameters given the derivatives of those values
+    # Inputs:
+    #   loss - The loss from the model
     def update(self, loss):
+        # Compute the gradients
         loss.backward()
+        
+        # Update the model parameters
         self.c1 = torch.tensor(self.c1 - self.alpha*self.c1.grad, requires_grad=True)
         self.c2 = torch.tensor(self.c2 - self.alpha*self.c2.grad, requires_grad=True)
         self.c3 = torch.tensor(self.c3 - self.alpha*self.c3.grad, requires_grad=True)
         self.c4 = torch.tensor(self.c4 - self.alpha*self.c4.grad, requires_grad=True)
 
     # The loss function used to evaluate the model
+    # Inputs:
+    #   preds - The predictions from the model
+    #   labels - The true values we want the model to predict
     def getLoss(self, preds, labels):
         return torch.sum((labels-preds)**2)
     
