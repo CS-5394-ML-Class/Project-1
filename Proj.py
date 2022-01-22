@@ -78,7 +78,7 @@ class model_nn(nn.Module):
         super(model_nn, self).__init__()
         
         # Alpha (learning rate) hyperparameter of the model
-        self.alpha_start = 0.01
+        self.alpha_start = 0.001
         self.alpha = self.alpha_start
         
         # Model Parameters
@@ -87,19 +87,31 @@ class model_nn(nn.Module):
         
         # The model to optimize
         self.model = nn.Sequential(
-            nn.Linear(self.input_shape, 32),
-            nn.LeakyReLU(negative_slope=0.01),
-            nn.Linear(32, 32),
-            nn.LeakyReLU(negative_slope=0.01),
-            nn.Linear(32, 32),
-            nn.LeakyReLU(negative_slope=0.01),
-            nn.Linear(32, self.output_shape),
+            nn.Linear(self.input_shape, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
+            nn.Linear(16, self.output_shape),
         )
         
         # The optimizer for the model
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.alpha)
-        
-        nn.utils.clip_grad_norm(self.model.parameters(), max_norm=1)
     
     # Get a prediction from the model
     # Inputs:
@@ -133,11 +145,6 @@ class model_nn(nn.Module):
     #   labels - The true values we want the model to predict
     def getLoss(self, preds, labels):
         return torch.sum((labels-preds)**2)/preds.shape[0]
-    
-
-    # Calculate the derivatives of the constants
-    def getParams(self):
-        return self.c1, self.c2, self.c3, self.c4, self.c5, self.c6
 
 
 
@@ -145,6 +152,9 @@ class model_nn(nn.Module):
 def train_sigmoid():
     # The number of times to train the model
     updates = 50000
+    
+    # True if the graph should be shown while training. False otherwise
+    showGraph = True
     
     
     
@@ -179,8 +189,22 @@ def train_sigmoid():
 
         # Update the model
         m.update(loss, updates, i)
-
-        print(f"Loss: {loss}")
+        
+        
+        # Plot the graph with some data and show the loss every so often
+        if i % 50 == 0:
+            print(f"Loss: {loss}")
+            if showGraph == True:
+                testX = torch.from_numpy(np.linspace(1900,2122,100))
+                testY = m(testX).detach()
+                plt.cla()
+                plt.plot(years, values, c="blue", label="Real Data")
+                plt.plot(testX, testY, c="red", label="Fitted curve")
+                plt.xlabel("Year")
+                plt.ylabel("Population (in Billions)")
+                plt.title("Data vs. Prediction")
+                plt.legend(loc="upper left")
+                plt.pause(0.0001)
     
     
     # Get the parameters of the model to see them
@@ -204,6 +228,7 @@ def train_sigmoid():
     testY = m(testX).detach()
     
     # Create the graph
+    plt.cla()
     plt.plot(years, values, c="blue", label="Real Data")
     plt.plot(testX, testY, c="red", label="Fitted curve")
     plt.xlabel("Year")
@@ -222,6 +247,9 @@ def train_nn():
     # The number of times to train the model
     updates = 50000
     
+    # True if the graph should be shown while training. False otherwise
+    showGraph = True
+    
     
     
     # Load in the data
@@ -237,13 +265,12 @@ def train_nn():
     values = torch.from_numpy(np.array(data.values, dtype=np.float))
     
     # Divide the values by 1 billion to help the model learn
-    values = values/1000000000
+    values = values/10000000
     
     # Divide the years by 100 to help the model learn
     #years = years/100
 
     # Initialize the model
-    #m = model_sigmoid()
     m = model_nn(1, 1)
 
     # Iterate "updates" number of times and update the model
@@ -257,12 +284,22 @@ def train_nn():
         # Update the model
         m.update(loss, updates, i)
 
-        print(f"Loss: {loss}")
+        
+        # Plot the graph with some data and show the loss every so often
+        if i % 50 == 0:
+            print(f"Loss: {loss}")
+            if showGraph == True:
+                testX = torch.from_numpy(np.linspace(1900,2122,100))
+                testY = m(testX).detach().reshape(testX.shape)
+                plt.cla()
+                plt.plot(years, values, c="blue", label="Real Data")
+                plt.plot(testX, testY, c="red", label="Fitted curve")
+                plt.xlabel("Year")
+                plt.ylabel("Population (in Billions)")
+                plt.title("Data vs. Prediction")
+                plt.legend(loc="upper left")
+                plt.pause(0.0001)
     
-    
-    # Get the parameters of the model to see them
-    #c1, c2, c3, c4, c5, c6 = m.getParams()
-    #print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}")
     
     # Make the prediction
     print(f"Model prediction for 2122: {m(torch.tensor(2122))} billion people")
@@ -278,10 +315,10 @@ def train_nn():
     testX = torch.from_numpy(np.linspace(1900,2122,100))
     
     # Input the values into the function
-    #testY = m(testX).detach()
     testY = m(testX).detach().reshape(testX.shape)
     
     # Create the graph
+    plt.cla()
     plt.plot(years, values, c="blue", label="Real Data")
     plt.plot(testX, testY, c="red", label="Fitted curve")
     plt.xlabel("Year")
@@ -293,4 +330,4 @@ def train_nn():
 
 
 
-train_sigmoid()
+train_nn()
