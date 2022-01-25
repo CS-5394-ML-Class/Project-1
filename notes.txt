@@ -1,0 +1,31 @@
+Sigmoid:
+- Problems:
+  - The function looks to be fiting toward the center of the data too much
+    which makes the upper bound of the fitted curve below the upper
+    vound of the data curve
+- Correction factors:
+  - The population value is divided by 1,000,000,000 (1 billion) to help
+    the function become more precise in fitting the data.
+  - c5 is -1990 to move the function right by 1990 so the function can be closer
+    to the data (which is from 1960-2020)
+  - c7 is 5.0 to move the function up a little so that it can better fit the
+    data as the data is centered about 5
+  - The alpha (learning rate) is decreased from the original value to
+    0 in order to help it learn slower during the later parts of training
+    to keep the learning mroe stable.
+
+
+
+Neural Network:
+- Problems:
+  - (Not anymore) The network had a really, really hard time fitting the data.
+    To fix this, the network was made really deep.
+- Correction factors:
+  - The population value is divided by 10,000,000 (10 million) to help
+    the function become more precise in fitting the data but also keep
+    some variance in the population values so the network has more room
+    for error.
+  - ReLU is used to help convince the model to not go below 0
+  - The alpha (learning rate) is decreased from the original value to
+    0 in order to help it learn slower during the later parts of training
+    to keep the learning more stable.

@@ -5,6 +5,8 @@ from torch import optim
 import pandas
 import os
 import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning) 
 
 
 
@@ -19,12 +21,12 @@ class model_sigmoid(nn.Module):
         
         # Parameters of the model
         self.c1 = torch.tensor(2.0, dtype=torch.float64, requires_grad=True)
-        self.c2 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
+        self.c2 = torch.tensor(5.0, dtype=torch.float64, requires_grad=True)
         self.c3 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c4 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c5 = torch.tensor(-1990.0, dtype=torch.float64, requires_grad=True)
         self.c6 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c7 = torch.tensor(5.0, dtype=torch.float64, requires_grad=True)
+        self.c7 = torch.tensor(6.0, dtype=torch.float64, requires_grad=True)
         
         nn.utils.clip_grad_norm([self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.c7], max_norm=0.1)
     
@@ -65,7 +67,7 @@ class model_sigmoid(nn.Module):
 
     # Calculate the derivatives of the constants
     def getParams(self):
-        return self.c1, self.c2, self.c3, self.c4, self.c5, self.c6
+        return self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.c7
     
     
     
@@ -208,8 +210,8 @@ def train_sigmoid():
     
     
     # Get the parameters of the model to see them
-    c1, c2, c3, c4, c5, c6 = m.getParams()
-    print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}")
+    c1, c2, c3, c4, c5, c6, c7 = m.getParams()
+    print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}, c&{c7}")
     
     # Make the prediction
     print(f"Model prediction for 2122: {m(torch.tensor(2122))} billion people")
@@ -292,8 +294,8 @@ def train_nn():
                 testX = torch.from_numpy(np.linspace(1900,2122,100))
                 testY = m(testX).detach().reshape(testX.shape)
                 plt.cla()
-                plt.plot(years, values, c="blue", label="Real Data")
-                plt.plot(testX, testY, c="red", label="Fitted curve")
+                plt.plot(years, values/100, c="blue", label="Real Data")
+                plt.plot(testX, testY/100, c="red", label="Fitted curve")
                 plt.xlabel("Year")
                 plt.ylabel("Population (in Billions)")
                 plt.title("Data vs. Prediction")
@@ -302,7 +304,7 @@ def train_nn():
     
     
     # Make the prediction
-    print(f"Model prediction for 2122: {m(torch.tensor(2122))} billion people")
+    print(f"Model prediction for 2122: {m(torch.tensor(2122))/100} billion people")
     
     
     
@@ -319,8 +321,8 @@ def train_nn():
     
     # Create the graph
     plt.cla()
-    plt.plot(years, values, c="blue", label="Real Data")
-    plt.plot(testX, testY, c="red", label="Fitted curve")
+    plt.plot(years, values/100, c="blue", label="Real Data")
+    plt.plot(testX, testY/100, c="red", label="Fitted curve")
     plt.xlabel("Year")
     plt.ylabel("Population (in Billions)")
     plt.title("Data vs. Prediction")
@@ -330,4 +332,4 @@ def train_nn():
 
 
 
-train_nn()
+train_sigmoid()
