@@ -23,13 +23,13 @@ class model_sigmoid(nn.Module):
         self.alpha = self.alpha_start
         
         # Parameters of the model
-        self.c1 = torch.tensor(5.0, dtype=torch.float64, requires_grad=True)
+        self.c1 = torch.tensor(8.0, dtype=torch.float64, requires_grad=True)
         self.c2 = torch.tensor(3.0, dtype=torch.float64, requires_grad=True)
         self.c3 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c4 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c5 = torch.tensor(-1700.0, dtype=torch.float64, requires_grad=True)
+        self.c5 = torch.tensor(-22.0, dtype=torch.float64, requires_grad=True)
         self.c6 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c7 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
+        self.c7 = torch.tensor(0.0, dtype=torch.float64, requires_grad=True)
     
     # Get a prediction from the model
     # Inputs:
@@ -172,7 +172,7 @@ def train_sigmoid():
     values = values/1000000000
     
     # Divide the years by 100 to help the model learn
-    #years = years/100
+    years = years/100
 
     # Initialize the model
     m = model_sigmoid()
@@ -191,14 +191,14 @@ def train_sigmoid():
         
         # Plot the graph with some data and show the loss every so often
         if i % 50 == 0:
-            print(f"Loss: {loss}")
+            print(f"Iteration #{i}, Loss: {loss}")
             if showGraph == True:
-                testX = torch.from_numpy(np.linspace(1300,2122,100))
+                testX = torch.from_numpy(np.linspace(13,21.22,100))
                 testY = m(testX).detach()
                 plt.cla()
                 plt.plot(years, values, c="blue", label="Real Data")
                 plt.plot(testX, testY, c="red", label="Fitted curve")
-                plt.xlabel("Year")
+                plt.xlabel("Year (divided by 100)")
                 plt.ylabel("Population (in Billions)")
                 plt.title("Data vs. Prediction")
                 plt.legend(loc="upper left")
@@ -220,7 +220,7 @@ def train_sigmoid():
     ### Graph creation ###
     # Create some data to test in the function
     #testX = torch.from_numpy(np.linspace(1960,2020,100))
-    testX = torch.from_numpy(np.linspace(1300,2122,100))
+    testX = torch.from_numpy(np.linspace(13.00,21.22,100))
     
     # Input the values into the function
     testY = m(testX).detach()
@@ -229,7 +229,7 @@ def train_sigmoid():
     plt.cla()
     plt.plot(years, values, c="blue", label="Real Data")
     plt.plot(testX, testY, c="red", label="Fitted curve")
-    plt.xlabel("Year")
+    plt.xlabel("Year (divided by 100)")
     plt.ylabel("Population (in Billions)")
     plt.title("Data vs. Prediction")
     plt.legend(loc="upper left")
@@ -281,14 +281,14 @@ def train_nn():
         
         # Plot the graph with some data and show the loss every so often
         if i % 50 == 0:
-            print(f"Loss: {loss}")
+            print(f"Iteration #{i}, Loss: {loss}")
             if showGraph == True:
                 testX = torch.from_numpy(np.linspace(1300,2122,100))
                 testY = m(testX).detach().reshape(testX.shape)
                 plt.cla()
                 plt.plot(years, values/100, c="blue", label="Real Data")
                 plt.plot(testX, testY/100, c="red", label="Fitted curve")
-                plt.xlabel("Year")
+                plt.xlabel("Year (divided by 100)")
                 plt.ylabel("Population (in Billions)")
                 plt.title("Data vs. Prediction")
                 plt.legend(loc="upper left")
@@ -315,7 +315,7 @@ def train_nn():
     plt.cla()
     plt.plot(years, values/100, c="blue", label="Real Data")
     plt.plot(testX, testY/100, c="red", label="Fitted curve")
-    plt.xlabel("Year")
+    plt.xlabel("Year (divided by 100)")
     plt.ylabel("Population (in Billions)")
     plt.title("Data vs. Prediction")
     plt.legend(loc="upper left")
@@ -324,4 +324,4 @@ def train_nn():
 
 
 
-train_nn()
+train_sigmoid()
