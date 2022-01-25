@@ -58,7 +58,11 @@ class model_sigmoid(nn.Module):
         # Decrease the learning rate
         self.alpha = self.alpha_start*(1-(currIter/numIter))
 
-    # The loss function used to evaluate the model
+    # The loss function used to evaluate the model. This loss
+    # function is a modified form of the MSE loss where
+    # 2*(1-self.c2)**2 is added to the loss value. This term
+    # convinced the function to not have a massive range and to
+    # keep the c2 term around 1.
     # Inputs:
     #   preds - The predictions from the model
     #   labels - The true values we want the model to predict
@@ -66,7 +70,7 @@ class model_sigmoid(nn.Module):
         return torch.sum((labels-preds)**2)/(preds.shape[0])+2*(1-self.c2)**2
     
 
-    # Calculate the derivatives of the constants
+    # Get the parameters from the model
     def getParams(self):
         return self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.c7
     
@@ -205,7 +209,7 @@ def train_sigmoid():
                 plt.pause(0.0001)
     
     
-    # Get the parameters of the model to see them
+    # Get the parameters of the model to save them
     c1, c2, c3, c4, c5, c6, c7 = m.getParams()
     print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}, c7={c7}")
     
@@ -219,7 +223,6 @@ def train_sigmoid():
     
     ### Graph creation ###
     # Create some data to test in the function
-    #testX = torch.from_numpy(np.linspace(1960,2020,100))
     testX = torch.from_numpy(np.linspace(13.00,25.22,100))
     
     # Input the values into the function
@@ -234,7 +237,6 @@ def train_sigmoid():
     plt.title("Data vs. Prediction")
     plt.legend(loc="upper left")
     plt.show()
-    print()
 
 
 
@@ -262,7 +264,7 @@ def train_nn():
     values = values/10000000
     
     # Divide the years by 100 to help the model learn
-    #years = years/100
+    years = years/100
 
     # Initialize the model
     m = model_nn(1, 1)
@@ -283,7 +285,7 @@ def train_nn():
         if i % 50 == 0:
             print(f"Iteration #{i}, Loss: {loss}")
             if showGraph == True:
-                testX = torch.from_numpy(np.linspace(1300,2122,100))
+                testX = torch.from_numpy(np.linspace(13.00,25.22,100))
                 testY = m(testX).detach().reshape(testX.shape)
                 plt.cla()
                 plt.plot(years, values/100, c="blue", label="Real Data")
@@ -305,8 +307,7 @@ def train_nn():
     
     ### Graph creation ###
     # Create some data to test in the function
-    #testX = torch.from_numpy(np.linspace(1960,2020,100))
-    testX = torch.from_numpy(np.linspace(1300,2122,100))
+    testX = torch.from_numpy(np.linspace(13.00,25.22,100))
     
     # Input the values into the function
     testY = m(testX).detach().reshape(testX.shape)
