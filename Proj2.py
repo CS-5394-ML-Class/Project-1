@@ -63,7 +63,7 @@ class model_sigmoid(nn.Module):
     #   preds - The predictions from the model
     #   labels - The true values we want the model to predict
     def getLoss(self, preds, labels):
-        return torch.sum((labels-preds)**2)/(preds.shape[0])
+        return torch.sum((labels-preds)**2)/(preds.shape[0])+2*(1-self.c2)**2
     
 
     # Calculate the derivatives of the constants
@@ -193,7 +193,7 @@ def train_sigmoid():
         if i % 50 == 0:
             print(f"Iteration #{i}, Loss: {loss}")
             if showGraph == True:
-                testX = torch.from_numpy(np.linspace(13,21.22,100))
+                testX = torch.from_numpy(np.linspace(13,25.22,100))
                 testY = m(testX).detach()
                 plt.cla()
                 plt.plot(years, values, c="blue", label="Real Data")
@@ -220,7 +220,7 @@ def train_sigmoid():
     ### Graph creation ###
     # Create some data to test in the function
     #testX = torch.from_numpy(np.linspace(1960,2020,100))
-    testX = torch.from_numpy(np.linspace(13.00,21.22,100))
+    testX = torch.from_numpy(np.linspace(13.00,25.22,100))
     
     # Input the values into the function
     testY = m(testX).detach()
