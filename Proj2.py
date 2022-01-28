@@ -27,15 +27,16 @@ class model_sigmoid(nn.Module):
         self.c2 = torch.tensor(3.0, dtype=torch.float64, requires_grad=True)
         self.c3 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c4 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c5 = torch.tensor(-22.0, dtype=torch.float64, requires_grad=True)
-        self.c6 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c7 = torch.tensor(0.0, dtype=torch.float64, requires_grad=True)
+        self.c5 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
+        self.c6 = torch.tensor(-22.0, dtype=torch.float64, requires_grad=True)
+        self.c7 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
+        self.c8 = torch.tensor(0.0, dtype=torch.float64, requires_grad=True)
     
     # Get a prediction from the model
     # Inputs:
     #   x - The inputs into the model
     def forward(self, x):
-        return (self.c1)/torch.pow((self.c2+self.c3*torch.exp(-(self.c4*x + self.c5))), self.c6)+self.c7
+        return (self.c1)/torch.pow((self.c2+self.c3*torch.exp(-self.c4*(self.c5*x + self.c6))), self.c7)+self.c8
 
     # Update the model parameters
     # Inputs:
@@ -50,10 +51,11 @@ class model_sigmoid(nn.Module):
         self.c1 = torch.tensor(self.c1 - self.alpha*self.c1.grad, requires_grad=True)
         self.c2 = torch.tensor(self.c2 - self.alpha*self.c2.grad, requires_grad=True)
         self.c3 = torch.tensor(self.c3 - self.alpha*self.c3.grad, requires_grad=True)
-        self.c4 = torch.tensor(self.c4 - 0.01*self.alpha*self.c4.grad, requires_grad=True)
+        self.c4 = torch.tensor(self.c4 - self.alpha*self.c4.grad, requires_grad=True)
         self.c5 = torch.tensor(self.c5 - self.alpha*self.c5.grad, requires_grad=True)
         self.c6 = torch.tensor(self.c6 - self.alpha*self.c6.grad, requires_grad=True)
         self.c7 = torch.tensor(self.c7 - self.alpha*self.c7.grad, requires_grad=True)
+        self.c8 = torch.tensor(self.c8 - self.alpha*self.c8.grad, requires_grad=True)
         
         # Decrease the learning rate
         self.alpha = self.alpha_start*(1-(currIter/numIter))
