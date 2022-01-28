@@ -23,7 +23,7 @@ class model_sigmoid(nn.Module):
         self.alpha = self.alpha_start
         
         # Parameters of the model
-        self.c1 = torch.tensor(8.0, dtype=torch.float64, requires_grad=True)
+        self.c1 = torch.tensor(10.0, dtype=torch.float64, requires_grad=True)
         self.c2 = torch.tensor(3.0, dtype=torch.float64, requires_grad=True)
         self.c3 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
         self.c4 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
