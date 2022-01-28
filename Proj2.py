@@ -15,7 +15,7 @@ torch.autograd.set_detect_anomaly(True)
 
 class model_sigmoid(nn.Module):
     # Initialize the model
-    def __init__(self):
+    def __init__(self, c1=10.0, c2=3, c3=1.0, c4=1.0, c5=1.0, c6=-22.0, c7=1.0, c8=1.0):
         super(model_sigmoid, self).__init__()
         
         # Alpha (learning rate) hyperparameter of the model
@@ -23,14 +23,14 @@ class model_sigmoid(nn.Module):
         self.alpha = self.alpha_start
         
         # Parameters of the model
-        self.c1 = torch.tensor(10.0, dtype=torch.float64, requires_grad=True)
-        self.c2 = torch.tensor(3.0, dtype=torch.float64, requires_grad=True)
-        self.c3 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c4 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c5 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c6 = torch.tensor(-22.0, dtype=torch.float64, requires_grad=True)
-        self.c7 = torch.tensor(1.0, dtype=torch.float64, requires_grad=True)
-        self.c8 = torch.tensor(0.0, dtype=torch.float64, requires_grad=True)
+        self.c1 = torch.tensor(c1, dtype=torch.float64, requires_grad=True)
+        self.c2 = torch.tensor(c2, dtype=torch.float64, requires_grad=True)
+        self.c3 = torch.tensor(c3, dtype=torch.float64, requires_grad=True)
+        self.c4 = torch.tensor(c4, dtype=torch.float64, requires_grad=True)
+        self.c5 = torch.tensor(c5, dtype=torch.float64, requires_grad=True)
+        self.c6 = torch.tensor(c6, dtype=torch.float64, requires_grad=True)
+        self.c7 = torch.tensor(c7, dtype=torch.float64, requires_grad=True)
+        self.c8 = torch.tensor(c8, dtype=torch.float64, requires_grad=True)
     
     # Get a prediction from the model
     # Inputs:
@@ -74,7 +74,7 @@ class model_sigmoid(nn.Module):
 
     # Get the parameters from the model
     def getParams(self):
-        return self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.c7
+        return self.c1, self.c2, self.c3, self.c4, self.c5, self.c6, self.c7, self.c8
     
     
     
@@ -212,8 +212,8 @@ def train_sigmoid():
     
     
     # Get the parameters of the model to save them
-    c1, c2, c3, c4, c5, c6, c7 = m.getParams()
-    print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}, c7={c7}")
+    c1, c2, c3, c4, c5, c6, c7, c8 = m.getParams()
+    print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}, c7={c7}, c8={c8}")
     
     # Make the prediction
     print(f"Model prediction for 2122: {m(torch.tensor(2122))} billion people")
@@ -226,6 +226,66 @@ def train_sigmoid():
     ### Graph creation ###
     # Create some data to test in the function
     testX = torch.from_numpy(np.linspace(13.00,25.22,100))
+    
+    # Input the values into the function
+    testY = m(testX).detach()
+    
+    # Create the graph
+    plt.cla()
+    plt.plot(years, values, c="blue", label="Real Data")
+    plt.plot(testX, testY, c="red", label="Fitted curve")
+    plt.xlabel("Year (divided by 100)")
+    plt.ylabel("Population (in Billions)")
+    plt.title("Data vs. Prediction")
+    plt.legend(loc="upper left")
+    plt.show()
+
+
+
+
+
+# Get the prediction for the sigmoid function
+def run_sigmoid():
+    c1 = 10.18805463456732
+    c2 = 0.9855009781392697
+    c3 = 1.0408825528624228
+    c4 = 2.026630542995041
+    c5 = 1.1056462243344374
+    c6 = -22.065494354509312
+    c7 = 1.0353500113498308
+    c8 = 0.5716785731731177
+    
+    
+    # Initialize the model
+    m = model_sigmoid(c1, c2, c3, c4, c5, c6, c7, c8)
+    
+    # Year to predict on
+    predYear = 2122
+
+    # Make the prediction
+    print(f"Model prediction for 2122: {m(torch.tensor(predYear))} billion people")
+    
+    
+    
+    
+    
+    
+    ### Graph creation ###
+    # Load in the data
+    data = pandas.read_csv(os.path.join("data", "data2.csv"))
+    
+    # Get the World data from the dataset
+    years = torch.tensor(data["year"].values[11300:].astype(np.float64), requires_grad=False)
+    values = torch.tensor(data["World Population"].values[11300:].astype(np.float64), requires_grad=False)
+    
+    # Divide the values by 1 billion to help the model learn
+    values = values/1000000000
+    
+    # Divide the years by 100 to help the model learn
+    years = years/100
+    
+    # Create some data to test in the function
+    testX = torch.from_numpy(np.linspace(13.00,21.22,100))
     
     # Input the values into the function
     testY = m(testX).detach()
@@ -326,5 +386,4 @@ def train_nn():
 
 
 
-
-train_sigmoid()
+run_sigmoid()
