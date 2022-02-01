@@ -15,7 +15,7 @@ torch.autograd.set_detect_anomaly(True)
 
 class model_sigmoid(nn.Module):
     # Initialize the model
-    def __init__(self, c1=10.0, c2=3, c3=1.0, c4=1.0, c5=1.0, c6=-22.0, c7=1.0, c8=1.0):
+    def __init__(self, c1=10.5, c2=3, c3=1.0, c4=1.0, c5=1.0, c6=-22.0, c7=1.0, c8=1.0):
         super(model_sigmoid, self).__init__()
         
         # Alpha (learning rate) hyperparameter of the model
@@ -202,13 +202,16 @@ def train_sigmoid():
                 testX = torch.from_numpy(np.linspace(13,25.22,100))
                 testY = m(testX).detach()
                 plt.cla()
-                plt.plot(years, values, c="blue", label="Real Data")
-                plt.plot(testX, testY, c="red", label="Fitted curve")
-                plt.xlabel("Year (divided by 100)")
+                plt.plot(years*100, values, c="blue", label="Real Data")
+                plt.plot(testX*100, testY, c="red", label="Fitted curve")
+                plt.plot(21.22*100, m(21.22).detach(), 'o', c="purple") 
+                plt.text(21.00*100, 0.5, f"Current 2122 Prediction: \n{m(21.22).detach().numpy().round(3)} Billion People", c="purple")
+                plt.xlabel("Year")
                 plt.ylabel("Population (in Billions)")
                 plt.title("Data vs. Prediction")
                 plt.legend(loc="upper left")
                 plt.pause(0.0001)
+                #plt.savefig(f'gif/img{i/50}.png')
     
     
     # Get the parameters of the model to save them
@@ -216,7 +219,7 @@ def train_sigmoid():
     print(f"Parameters: c1={c1}, c2={c2}, c3={c3}, c4={c4}, c5={c5}, c6={c6}, c7={c7}, c8={c8}")
     
     # Make the prediction
-    print(f"Model prediction for 2122: {m(torch.tensor(2122))} billion people")
+    print(f"Model prediction for 2122: {m(torch.tensor(21.22))} billion people")
     
     
     
@@ -232,9 +235,11 @@ def train_sigmoid():
     
     # Create the graph
     plt.cla()
-    plt.plot(years, values, c="blue", label="Real Data")
-    plt.plot(testX, testY, c="red", label="Fitted curve")
-    plt.xlabel("Year (divided by 100)")
+    plt.plot(years*100, values, c="blue", label="Real Data")
+    plt.plot(testX*100, testY, c="red", label="Fitted curve")
+    plt.plot(21.22*100, m(21.22).detach(), 'o', c="purple") 
+    plt.text(12.75*100, 8, f"Final 2122 Prediction: \n{m(21.22).detach().numpy().round(3)} Billion People", c="purple")
+    plt.xlabel("Year")
     plt.ylabel("Population (in Billions)")
     plt.title("Data vs. Prediction")
     plt.legend(loc="upper left")
@@ -246,21 +251,21 @@ def train_sigmoid():
 
 # Get the prediction for the sigmoid function
 def run_sigmoid():
-    c1 = 10.18805463456732
-    c2 = 0.9855009781392697
-    c3 = 1.0408825528624228
-    c4 = 2.026630542995041
-    c5 = 1.1056462243344374
-    c6 = -22.065494354509312
-    c7 = 1.0353500113498308
-    c8 = 0.5716785731731177
+    c1 = 10.654135216823821
+    c2 = 0.9864140912245566
+    c3 = 1.0385540355655845
+    c4 = 1.9698143047910193
+    c5 = 1.104389410774113
+    c6 = -22.060388036261674
+    c7 = 1.0657278995848072
+    c8 = 0.5712219176728186
     
     
     # Initialize the model
     m = model_sigmoid(c1, c2, c3, c4, c5, c6, c7, c8)
     
     # Year to predict on
-    predYear = 2122
+    predYear = 21.22
 
     # Make the prediction
     print(f"Model prediction for 2122: {m(torch.tensor(predYear))} billion people")
@@ -292,9 +297,11 @@ def run_sigmoid():
     
     # Create the graph
     plt.cla()
-    plt.plot(years, values, c="blue", label="Real Data")
-    plt.plot(testX, testY, c="red", label="Fitted curve")
-    plt.xlabel("Year (divided by 100)")
+    plt.plot(years*100, values, c="blue", label="Real Data")
+    plt.plot(testX*100, testY, c="red", label="Fitted curve")
+    plt.plot(21.22*100, m(21.22).detach(), 'o', c="purple") 
+    plt.text(12.75*100, 8, f"Final 2122 Prediction: \n{m(21.22).detach().numpy().round(3)} Billion People", c="purple")
+    plt.xlabel("Year")
     plt.ylabel("Population (in Billions)")
     plt.title("Data vs. Prediction")
     plt.legend(loc="upper left")
@@ -347,11 +354,13 @@ def train_nn():
         if i % 50 == 0:
             print(f"Iteration #{i}, Loss: {loss}")
             if showGraph == True:
-                testX = torch.from_numpy(np.linspace(13.00,25.22,100))
+                testX = torch.from_numpy(np.linspace(13.00,25.22,1000))
                 testY = m(testX).detach().reshape(testX.shape)
                 plt.cla()
-                plt.plot(years, values/100, c="blue", label="Real Data")
-                plt.plot(testX, testY/100, c="red", label="Fitted curve")
+                plt.plot(years*100, values/100, c="blue", label="Real Data")
+                plt.plot(testX*100, testY/100, c="red", label="Fitted curve")
+                plt.plot(21.22*100, m(torch.tensor(21.22)).detach()/100, 'o', c="purple") 
+                plt.text(12.75*100, 8, f"Current 2122 Prediction: \n{m(torch.tensor(21.22)).detach().numpy().round(3)/100} Billion People", c="purple")
                 plt.xlabel("Year (divided by 100)")
                 plt.ylabel("Population (in Billions)")
                 plt.title("Data vs. Prediction")
@@ -360,7 +369,7 @@ def train_nn():
     
     
     # Make the prediction
-    print(f"Model prediction for 2122: {m(torch.tensor(2122))/100} billion people")
+    print(f"Model prediction for 2122: {m(torch.tensor(21.22))} billion people")
     
     
     
@@ -369,15 +378,17 @@ def train_nn():
     
     ### Graph creation ###
     # Create some data to test in the function
-    testX = torch.from_numpy(np.linspace(13.00,25.22,100))
+    testX = torch.from_numpy(np.linspace(13.00,25.22,1000))
     
     # Input the values into the function
     testY = m(testX).detach().reshape(testX.shape)
     
     # Create the graph
     plt.cla()
-    plt.plot(years, values/100, c="blue", label="Real Data")
-    plt.plot(testX, testY/100, c="red", label="Fitted curve")
+    plt.plot(years*100, values/100, c="blue", label="Real Data")
+    plt.plot(testX*100, testY/100, c="red", label="Fitted curve")
+    plt.plot(21.22*100, m(21.22).detach()/100, 'o', c="purple") 
+    plt.text(12.75*100, 8, f"Final 2122 Prediction: \n{m(21.22).detach().numpy().round(3)/100} Billion People", c="purple")
     plt.xlabel("Year (divided by 100)")
     plt.ylabel("Population (in Billions)")
     plt.title("Data vs. Prediction")
